@@ -23,7 +23,8 @@ const startServer = async () => {
         const server = new ApolloServer<MyContext>({
             typeDefs,
             resolvers,
-            formatError
+            formatError,
+            introspection: true
         });
 
         const { url } = await startStandaloneServer(server, {
