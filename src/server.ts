@@ -8,7 +8,7 @@ import resolvers from './graphql/resolvers';
 import { formatError } from './graphql/formatError';
 dotenv.config();
 
-const PORT = process.env.PORT || 8000;
+const PORT = Number.parseInt(process.env.PORT) || 8000;
 interface MyContext {
     token?: String;
 }
@@ -20,7 +20,11 @@ const startServer = async () => {
         console.log('MongoDB connection successful');
 
         const db = client.db(); // Access the MongoDB database
-        const server = new ApolloServer<MyContext>({ typeDefs, resolvers, formatError });
+        const server = new ApolloServer<MyContext>({
+            typeDefs,
+            resolvers,
+            formatError
+        });
 
         const { url } = await startStandaloneServer(server, {
             context: async ({ req }) => ({
@@ -28,7 +32,7 @@ const startServer = async () => {
                 usersCollection: db.collection('users'),
                 postsCollection: db.collection('posts')
             }),
-            listen: { port: 8000 }
+            listen: { port: PORT }
         });
         console.log(`Server started at ${url}`);
     } catch (error) {
