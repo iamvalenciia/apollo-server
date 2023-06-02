@@ -1,33 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GraphQLError } from 'graphql';
-import { error } from 'console';
-import { ApolloServerErrorCode } from '@apollo/server/errors';
-
-interface User {
-    name?: string;
-    userName?: string;
-    email?: string;
-    password?: string;
-    gender?: string;
-    followersCount?: number;
-    followingCount?: number;
-}
-
-interface UserCreated {
-    acknowledged: Boolean;
-    insertedId: ObjectId | String;
-    message: String;
-}
-
-interface UserInput {
-    name?: string;
-    userName?: string;
-    email?: string;
-    password?: string;
-    gender?: string;
-    followersCount?: number;
-    followingCount?: number;
-}
+import { User, UserCreated, UserInput } from './interface';
 
 export default {
     Query: {
