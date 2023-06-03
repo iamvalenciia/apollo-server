@@ -37,7 +37,7 @@ export function formatError(formattedError: any, error: any) {
 
         return errorResponse;
     }
-    // THIS HANDLES SERVER ERROR DATA VALIDATION
+    // THIS HANDLES SERVER ERROR - DATA VALIDATION
     if (
         formattedError.extensions.code === ApolloServerErrorCode.BAD_USER_INPUT
     ) {
@@ -56,7 +56,7 @@ export function formatError(formattedError: any, error: any) {
 
         return errorResponse;
     }
-    // THIS HANDLES DATABASE ERROR DATA VALIDATION
+    // THIS HANDLES DATABASE ERROR - DATA VALIDATION
     if (formattedError.message.startsWith('DatabaseError')) {
         const errorLines = formattedError.message.split('\n');
 
