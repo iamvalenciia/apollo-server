@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GraphQLError } from 'graphql';
 import { UserCreated, UserInput } from './interfaces';
 
-export const userMutations = {
+export const Mutations = {
     // CREATE USER
     async createUser(
         _: any,

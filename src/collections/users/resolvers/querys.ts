@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GraphQLError } from 'graphql';
 import { User } from './interfaces';
 
-export const userQuerys = {
+export const Querys = {
     // GET USER
     async user(_: any, { id }: { id: string }, context: any): Promise<User> {
         try {

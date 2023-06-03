@@ -1,7 +1,7 @@
-import { userQuerys } from './querys';
-import { userMutations } from './mutations';
+import { Querys } from './querys';
+import { Mutations } from './mutations';
 
 export default {
-    userQuerys,
-    userMutations
+    Querys,
+    Mutations
 };
