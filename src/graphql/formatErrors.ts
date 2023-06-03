@@ -1,56 +1,43 @@
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 
-export function formatError(formattedError, error) {
-    // QUERY ERRORS
+export function formatError(formattedError: any, error: any) {
+    // ERROR: QUERY GET-USER CANNOT RETURN A NULL VALUE
     if (
         formattedError.message.startsWith(
-            'Cannot return null for non-nullable field Query.user'
+            'Cannot return null for non-nullable field Query.user.'
         )
     ) {
-        const message = formattedError.message;
-        const idMatch = message.match(/User not found (\w+)/);
-        const id = idMatch ? idMatch[1] : '';
-
         const errorResponse = {
-            MongoServerError: 'Not Found',
-            description: 'The requested user could not be found',
-            id: id
+            DatabaseError: 'User Not Found',
+            description: 'The requested user could not be found'
         };
 
         return errorResponse;
     }
-
-    if (
-        formattedError.message.startsWith('Cannot read properties of undefined')
-    ) {
-        const message = formattedError.message;
-        const idMatch = message.match(/User not found (\w+)/);
-        const id = idMatch ? idMatch[1] : '';
-
+    // ERROR: ID NOT FOUND IN THE DATABASE
+    if (formattedError.message.startsWith('false')) {
         const errorResponse = {
-            MongoServerError: 'Not Found',
+            DatabaseError: 'User Not Found',
             description:
-                'The user you are trying to edit could not be found. Please ensure that you have provided the correct ID for the user.',
-            id: id
+                'The user you are trying to edit could not be found. Please, ensure that you have provided the correct _id.'
         };
 
         return errorResponse;
     }
-
-    // MUTATION ERRORS
+    // ERROR: INVALID USER ID
     if (
         formattedError.message.startsWith(
-            'Argument passed in must be a string of 12'
+            'Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer'
         )
     ) {
         const errorResponse = {
-            ApolloServerError: '400 Bad Request',
-            description: `Invalid ID: ${formattedError.message}`
+            ServerError: 'Invalid User _id',
+            description: `${formattedError.message}`
         };
 
         return errorResponse;
     }
-
+    // THIS HANDLES SERVER ERROR DATA VALIDATION
     if (
         formattedError.extensions.code === ApolloServerErrorCode.BAD_USER_INPUT
     ) {
@@ -63,14 +50,14 @@ export function formatError(formattedError, error) {
         const field = fieldMatch ? fieldMatch[1].replace(/\\"/g, '') : '';
 
         const errorResponse = {
-            ApolloServerError: 'Invalid input',
+            ServerError: 'Invalid input',
             description: `The ${field} field only accepts ${dataType} values. Please ensure you provide the correct data type for each field.`
         };
 
         return errorResponse;
     }
-
-    if (formattedError.message.startsWith('MongoServerError: ')) {
+    // THIS HANDLES DATABASE ERROR DATA VALIDATION
+    if (formattedError.message.startsWith('DatabaseError')) {
         const errorLines = formattedError.message.split('\n');
 
         let error = '';
@@ -78,7 +65,7 @@ export function formatError(formattedError, error) {
         let description = '';
 
         for (const line of errorLines) {
-            if (line.includes('MongoServerError:')) {
+            if (line.includes('DatabaseError:')) {
                 error = line.split(':')[1]?.trim();
             } else if (line.includes('propertiesNotSatisfied:')) {
                 propertiesNotSatisfied = line
@@ -91,7 +78,7 @@ export function formatError(formattedError, error) {
         }
 
         const errorResponse = {
-            MongoServerError: error,
+            DatabaseError: error,
             description: description,
             propertiesNotSatisfied: propertiesNotSatisfied
         };

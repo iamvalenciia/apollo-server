@@ -5,7 +5,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { MongoClient } from 'mongodb';
 import { typeDefs } from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
-import { formatError } from './graphql/formatError';
+import { formatError } from './graphql/formatErrors';
 dotenv.config();
 
 const PORT = Number.parseInt(process.env.PORT) || 8000;
