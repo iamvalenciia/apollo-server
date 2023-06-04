@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
 import dotenv from 'dotenv';
 import { ApolloServer } from '@apollo/server';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { MongoClient } from 'mongodb';
-import { typeDefs } from './graphql/typeDefs';
+import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
 import { formatError } from './graphql/formatErrors';
 dotenv.config();
@@ -19,10 +20,13 @@ const startServer = async () => {
         await client.connect();
         console.log('MongoDB connection successful');
 
-        const db = client.db(); // Access the MongoDB database
+        const db = client.db();
+
         const server = new ApolloServer<MyContext>({
-            typeDefs,
-            resolvers,
+            schema: makeExecutableSchema({
+                typeDefs,
+                resolvers
+            }),
             formatError,
             introspection: true
         });

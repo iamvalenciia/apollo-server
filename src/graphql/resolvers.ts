@@ -1,6 +1,5 @@
-import userResolvers from '../collections/users/resolvers/main';
+import { userResolver } from '../collections/users/resolvers/main';
+import { postResolver } from '../collections/posts/resolvers/main';
+import { merge } from 'lodash';
 
-export default {
-    Query: userResolvers.Querys,
-    Mutation: userResolvers.Mutations
-};
+export default merge(userResolver, postResolver);

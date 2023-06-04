@@ -38,25 +38,6 @@ export const typeDefs = `#graphql
     }
 
     """
-    Represents the values returned when a user is successfully created.
-    """
-    type UserCreated  {
-        """
-        Indicates whether the user creation operation was acknowledged by MongoDB.
-        A value of true means the user was successfully created.
-        """
-        acknowledged: Boolean
-        """
-        The ID of the user that was recently created, returned from MongoDB.
-        """
-        insertedId: String
-        """
-        A custom message returned by the server.
-        """
-        message: String
-    }
-
-    """
     Represents the input values used for creating and editing users.
     """
     input UserInput {
@@ -90,7 +71,7 @@ export const typeDefs = `#graphql
         followingCount: Int
     }
 
-    type Query {
+    extend type Query {
         """
         Retrieves a user by their ID.
         """
@@ -101,11 +82,11 @@ export const typeDefs = `#graphql
         getUsers: [User!]!
     }
 
-    type Mutation {
+    extend type Mutation {
         """
         Creates a new user with the provided input values.
         """
-        createUser(userInput: UserInput): UserCreated
+        createUser(userInput: UserInput): SuccessfullyCreated
         """
         Deletes a user with the specified ID.
         """

@@ -85,8 +85,20 @@ export function formatError(formattedError: any, error: any) {
 
         return errorResponse;
     }
-
+    // if (error.message.startsWith('Document failed validation')) {
+    //     return {
+    //         message: error.message,
+    //         properteisNotSatisfied:
+    //             error.errInfo.details.schemaRulesNotSatisfied[0]
+    //                 .propertiesNotSatisfied[0].propertyName,
+    //         description:
+    //             error.errInfo.details.schemaRulesNotSatisfied[0]
+    //                 .propertiesNotSatisfied[0].description
+    //     };
+    // }
     // Otherwise return the formatted error. This error can also
     // be manipulated in other ways, as long as it's returned.
+    console.log(error);
+    console.log(formattedError);
     return formattedError;
 }

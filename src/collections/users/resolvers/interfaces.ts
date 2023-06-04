@@ -10,7 +10,7 @@ export interface User {
     followingCount?: number;
 }
 
-export interface UserCreated {
+export interface SuccessfullyCreated {
     acknowledged: boolean;
     insertedId: ObjectId | string;
     message: string;
