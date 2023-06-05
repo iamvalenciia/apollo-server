@@ -10,35 +10,35 @@ export const typeDefs = `#graphql
         """
         The name of the user.
         """
-        name: String
+        name: String!
         """
         The username of the user.
         """
-        userName: String
+        userName: String!
         """
         The email address of the user.
         """
-        email: String
+        email: String!
         """
         The password of the user.
         """
-        password: String
+        password: String!
         """
         The gender of the user.
         """
-        gender: String
+        gender: String!
         """
         The number of followers of the user.
         """
-        followersCount: Int
+        followersCount: Int!
         """
         The number of users the user is following.
         """
-        followingCount: Int
+        followingCount: Int!
     }
 
     """
-    Represents the input values used for creating and editing users.
+    Represents the input values used for creating or editing users.
     """
     input UserInput {
         """
@@ -86,14 +86,14 @@ export const typeDefs = `#graphql
         """
         Creates a new user with the provided input values.
         """
-        createUser(userInput: UserInput): SuccessfullyCreated
+        createUser(userInput: UserInput): SuccessfullyCreated!
         """
         Deletes a user with the specified ID.
         """
-        deleteUser(id: ID!): Boolean
+        deleteUser(id: ID!): Boolean!
         """
         Edits an existing user with the provided ID and input values.
         """
-        editUser(id: ID!, userInput: UserInput): Boolean
+        editUser(id: ID!, userInput: UserInput): Boolean!
     }
 `;

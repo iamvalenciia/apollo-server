@@ -96,7 +96,10 @@ export const Mutations = {
                 createdAt: new Date(createdAt),
                 content,
                 likes,
-                Participants: [],
+                Participants: Participants.map((participant: Participant) => ({
+                    id_user: new ObjectId(participant.id_user),
+                    status: participant.status
+                })),
                 postStatus
             };
             try {

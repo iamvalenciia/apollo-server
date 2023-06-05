@@ -11,6 +11,7 @@ export const Querys = {
             context: any
         ): Promise<User> {
             try {
+                console.log(context);
                 const result = await context.usersCollection.findOne({
                     _id: new ObjectId(id)
                 });

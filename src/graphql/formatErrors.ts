@@ -14,6 +14,19 @@ export function formatError(formattedError: any, error: any) {
 
         return errorResponse;
     }
+    // ERROR: QUERY GET-POST CANNOT RETURN A NULL VALUE
+    if (
+        formattedError.message.startsWith(
+            'Cannot return null for non-nullable field Query.post.'
+        )
+    ) {
+        const errorResponse = {
+            DatabaseError: 'Post Not Found',
+            description: 'The requested post could not be found'
+        };
+
+        return errorResponse;
+    }
     // ERROR: ID NOT FOUND IN THE DATABASE
     if (formattedError.message.startsWith('false')) {
         const errorResponse = {
@@ -31,27 +44,30 @@ export function formatError(formattedError: any, error: any) {
         )
     ) {
         const errorResponse = {
-            ServerError: 'Invalid User _id',
+            ServerError: 'Invalid _id',
             description: `${formattedError.message}`
         };
 
         return errorResponse;
     }
-    // THIS HANDLES SERVER ERROR - DATA VALIDATION
+    //THIS HANDLES SERVER ERROR - DATA VALIDATION
     if (
         formattedError.extensions.code === ApolloServerErrorCode.BAD_USER_INPUT
     ) {
-        const stackTrace = formattedError.extensions.stacktrace[0];
+        const errorMessage = formattedError.message;
 
-        const dataTypeMatch = stackTrace.match(/;\s(.+?)\s/);
+        const variableMatch = errorMessage.match(/Variable "\$(\w+)"/);
+        const variable = variableMatch ? variableMatch[1] : '';
+
+        const fieldMatch = errorMessage.match(/at "(.*?)";/);
+        const field = fieldMatch ? fieldMatch[1].split('.').pop() : '';
+
+        const dataTypeMatch = errorMessage.match(/; (.+?) cannot represent/);
         const dataType = dataTypeMatch ? dataTypeMatch[1] : '';
-
-        const fieldMatch = stackTrace.match(/userInput\.(.+?)(?=";)/);
-        const field = fieldMatch ? fieldMatch[1].replace(/\\"/g, '') : '';
 
         const errorResponse = {
             ServerError: 'Invalid input',
-            description: `The ${field} field only accepts ${dataType} values. Please ensure you provide the correct data type for each field.`
+            description: `The ${field} field of ${variable} only accepts ${dataType} values. Please ensure you provide the correct data type for each field.`
         };
 
         return errorResponse;
@@ -85,17 +101,7 @@ export function formatError(formattedError: any, error: any) {
 
         return errorResponse;
     }
-    // if (error.message.startsWith('Document failed validation')) {
-    //     return {
-    //         message: error.message,
-    //         properteisNotSatisfied:
-    //             error.errInfo.details.schemaRulesNotSatisfied[0]
-    //                 .propertiesNotSatisfied[0].propertyName,
-    //         description:
-    //             error.errInfo.details.schemaRulesNotSatisfied[0]
-    //                 .propertiesNotSatisfied[0].description
-    //     };
-    // }
+
     // Otherwise return the formatted error. This error can also
     // be manipulated in other ways, as long as it's returned.
     console.log(error);
