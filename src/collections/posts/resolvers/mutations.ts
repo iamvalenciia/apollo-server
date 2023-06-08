@@ -33,6 +33,12 @@ export const Mutations = {
                 postStatus
             };
             try {
+                if (!context.user) {
+                    throw new GraphQLError(
+                        'User is not authenticated to create a post',
+                        err401
+                    );
+                }
                 const result = await context.postsCollection.insertOne(newPost);
                 if (result.acknowledged == true) {
                     return {
@@ -57,6 +63,12 @@ export const Mutations = {
             context: any
         ): Promise<boolean> {
             try {
+                if (!context.user) {
+                    throw new GraphQLError(
+                        'User is not authenticated to delete this post',
+                        err401
+                    );
+                }
                 const result = await context.postsCollection.deleteOne({
                     _id: new ObjectId(id)
                 });
@@ -91,6 +103,12 @@ export const Mutations = {
                 postStatus
             };
             try {
+                if (!context.user) {
+                    throw new GraphQLError(
+                        'User is not authenticated to update this post',
+                        err401
+                    );
+                }
                 await context.postsCollection.updateOne(
                     { _id: new ObjectId(id) },
                     { $set: updatedPost }

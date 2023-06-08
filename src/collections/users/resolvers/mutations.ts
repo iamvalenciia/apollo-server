@@ -150,6 +150,12 @@ export const Mutations = {
                 followingCount
             };
             try {
+                if (!context.user) {
+                    throw new GraphQLError(
+                        'User is not authenticated to edit this user information',
+                        err401
+                    );
+                }
                 const result = await context.usersCollection.findOneAndUpdate(
                     { _id: new ObjectId(id) },
                     { $set: updatedUser }
@@ -180,6 +186,12 @@ export const Mutations = {
             context: any
         ): Promise<boolean> {
             try {
+                if (!context.user) {
+                    throw new GraphQLError(
+                        'User is not authenticated to delete this user',
+                        err401
+                    );
+                }
                 const result = await context.usersCollection.deleteOne({
                     _id: new ObjectId(id)
                 });
