@@ -1,9 +1,11 @@
 /* eslint-disable no-undef */
 import dotenv from 'dotenv';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { GraphQLError } from 'graphql';
 import { ApolloServer } from '@apollo/server';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
 import { formatError } from './graphql/formatErrors';
@@ -32,11 +34,34 @@ const startServer = async () => {
         });
 
         const { url } = await startStandaloneServer(server, {
-            context: async ({ req }) => ({
-                token: req.headers.token,
-                usersCollection: db.collection('users'),
-                postsCollection: db.collection('posts')
-            }),
+            context: async ({ req }) => {
+                const usersCollection = db.collection('users');
+                const postsCollection = db.collection('posts');
+                const authorizationHeader = req.headers.authorization || '';
+                const token = authorizationHeader.replace('Bearer ', '');
+                let user = null;
+                let userId = null;
+
+                try {
+                    if (token) {
+                        // Verify and decode the access token
+                        const decodedToken = jwt.verify(
+                            token,
+                            process.env.JWT_SECRET_KEY
+                        ) as JwtPayload;
+                        // Extract user information from the decoded token
+                        const { user_id, email } = decodedToken;
+                        userId = user_id;
+                        user = await usersCollection.findOne({
+                            _id: new ObjectId(user_id)
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error decoding token:', error);
+                }
+
+                return { userId, user, usersCollection, postsCollection };
+            },
             listen: { port: PORT }
         });
         console.log(`Server started at ${url}`);

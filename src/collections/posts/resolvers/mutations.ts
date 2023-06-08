@@ -3,6 +3,7 @@ import { GraphQLError, isCompositeType } from 'graphql';
 import { Post, PostInput, Participant } from './interfaces';
 import { SuccessfullyCreated } from './interfaces';
 import { result } from 'lodash';
+import { err400, err401 } from '../../../helpers/statusCodes';
 
 export const Mutations = {
     Mutation: {
@@ -33,7 +34,6 @@ export const Mutations = {
             };
             try {
                 const result = await context.postsCollection.insertOne(newPost);
-                console.log(result);
                 if (result.acknowledged == true) {
                     return {
                         acknowledged: result.acknowledged,
@@ -46,13 +46,7 @@ export const Mutations = {
                     `DatabaseError: Document failed validation
                 propertiesNotSatisfied: ${error.errInfo.details.schemaRulesNotSatisfied[0].propertiesNotSatisfied[0].propertyName},
                 description: ${error.errInfo.details.schemaRulesNotSatisfied[0].propertiesNotSatisfied[0].description}`,
-                    {
-                        extensions: {
-                            http: {
-                                status: 400
-                            }
-                        }
-                    }
+                    err400
                 );
             }
         },
@@ -68,13 +62,7 @@ export const Mutations = {
                 });
                 return result.deletedCount === 1;
             } catch (error: any) {
-                throw new GraphQLError(`${error.message}`, {
-                    extensions: {
-                        http: {
-                            status: 400
-                        }
-                    }
-                });
+                throw new GraphQLError(`${error.message}`, err400);
             }
         },
         // UPDATE POST
@@ -116,13 +104,7 @@ export const Mutations = {
                     `DatabaseError: Document failed validation
                 propertiesNotSatisfied: ${error.errInfo.details.schemaRulesNotSatisfied[0].propertiesNotSatisfied[0].propertyName},
                 description: ${error.errInfo.details.schemaRulesNotSatisfied[0].propertiesNotSatisfied[0].description}`,
-                    {
-                        extensions: {
-                            http: {
-                                status: 400
-                            }
-                        }
-                    }
+                    err400
                 );
             }
         },
@@ -151,13 +133,7 @@ export const Mutations = {
                 });
                 return updatedPostData;
             } catch (error: any) {
-                throw new GraphQLError(`${error.message}`, {
-                    extensions: {
-                        http: {
-                            status: 400
-                        }
-                    }
-                });
+                throw new GraphQLError(`${error.message}`, err400);
             }
         }
     }

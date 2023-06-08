@@ -35,12 +35,22 @@ export const typeDefs = `#graphql
         The number of users the user is following.
         """
         followingCount: Int!
+        """
+        Json Web Token for Authentication
+        """
+        token: String
     }
 
+    input LoginUser {
+        email: String
+        password: String
+    }
+
+
     """
-    Represents the input values used for creating or editing users.
+    Represents the input values used for register or edit users.
     """
-    input UserInput {
+    input RegisterInput {
         """
         The name of the user.
         """
@@ -61,14 +71,6 @@ export const typeDefs = `#graphql
         The gender of the user.
         """
         gender: String
-        """
-        The number of followers of the user.
-        """
-        followersCount: Int
-        """
-        The number of users the user is following.
-        """
-        followingCount: Int
     }
 
     extend type Query {
@@ -84,9 +86,13 @@ export const typeDefs = `#graphql
 
     extend type Mutation {
         """
-        Creates a new user with the provided input values.
+        Register a new user with the provided input values.
         """
-        createUser(userInput: UserInput): SuccessfullyCreated!
+        registerUser(registerInput: RegisterInput): User!
+        """
+        Login user with the provided credentials 
+        """
+        loginUser(loginInput: LoginUser): User!
         """
         Deletes a user with the specified ID.
         """
@@ -94,6 +100,11 @@ export const typeDefs = `#graphql
         """
         Edits an existing user with the provided ID and input values.
         """
-        editUser(id: ID!, userInput: UserInput): Boolean!
+        editUser(id: ID!, editUserInput: RegisterInput): Boolean!
+        """
+        Log out the currently authenticated user.
+        """
+        logOut: Boolean!
     }
+    
 `;

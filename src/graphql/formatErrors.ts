@@ -104,7 +104,5 @@ export function formatError(formattedError: any, error: any) {
 
     // Otherwise return the formatted error. This error can also
     // be manipulated in other ways, as long as it's returned.
-    console.log(error);
-    console.log(formattedError);
     return formattedError;
 }
