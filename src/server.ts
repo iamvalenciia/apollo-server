@@ -42,8 +42,8 @@ const startServer = async () => {
                 let user = null;
                 let userId = null;
 
-                try {
-                    if (token) {
+                if (token) {
+                    try {
                         // Verify and decode the access token
                         const decodedToken = jwt.verify(
                             token,
@@ -55,9 +55,9 @@ const startServer = async () => {
                         user = await usersCollection.findOne({
                             _id: new ObjectId(user_id)
                         });
+                    } catch (error) {
+                        console.error('Error decoding token:', error);
                     }
-                } catch (error) {
-                    console.error('Error decoding token:', error);
                 }
 
                 return { userId, user, usersCollection, postsCollection };

@@ -128,26 +128,18 @@ export const Mutations = {
         // EDIT USER
         async editUser(
             _: any,
-            { id, userInput }: { id: string; userInput: UserInput },
+            { id, editUserInput }: { id: string; editUserInput: UserInput },
             context: any
         ): Promise<boolean> {
-            const {
-                name,
-                userName,
-                email,
-                password,
-                gender,
-                followersCount,
-                followingCount
-            } = userInput;
+            const { name, userName, email, password, gender } = editUserInput;
             const updatedUser: UserInput = {
                 name,
                 userName,
                 email,
                 password,
                 gender,
-                followersCount,
-                followingCount
+                followersCount: 0,
+                followingCount: 0
             };
             try {
                 if (!context.user) {
@@ -168,6 +160,7 @@ export const Mutations = {
                     );
                 }
             } catch (error: any) {
+                console.log(error);
                 if (error.codeName == 'DocumentValidationFailure') {
                     throw new GraphQLError(
                         `DatabaseError: Document failed validation
